@@ -1,24 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<style>
-  /* 隱藏第2到第8欄（重量～淨碳水） */
-  .result-table td:nth-child(2),
-  .result-table th:nth-child(2),
-  .result-table td:nth-child(3),
-  .result-table th:nth-child(3),
-  .result-table td:nth-child(4),
-  .result-table th:nth-child(4),
-  .result-table td:nth-child(5),
-  .result-table th:nth-child(5),
-  .result-table td:nth-child(6),
-  .result-table th:nth-child(6),
-  .result-table td:nth-child(7),
-  .result-table th:nth-child(7),
-  .result-table td:nth-child(8),
-  .result-table th:nth-child(8) {
-    display: none;
-  }
+
     <meta charset="UTF-8">
     <title>熱量計算表</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
@@ -267,13 +250,7 @@
                         input.id = `quantity-${rowIndex}`;
                         input.value = 0;
                         input.min = 0;
-                        input.dataset.calories = row['熱量'] || 0; // Ensure header matches CSV file
-                        input.dataset.protein = row['蛋白質'] || 0;   // Ensure header matches CSV file
-                        input.dataset.fat = row['脂肪'] || 0;           // Ensure header matches CSV file
-                        input.dataset.carbs = row['碳水化合物'] || 0;       // Ensure header matches CSV file
-                        input.dataset.fiber = row['膳食纖維'] || 0;       // Ensure header matches CSV file
-                        input.dataset.netcarb = row['淨碳'] || 0;          // Ensure header matches CSV file
-                        input.dataset.weight = row['重量'] || 0;    // Add weight attribute if matches CSV file
+
                         td.appendChild(input);
                         tr.appendChild(td);
 
@@ -355,3 +332,4 @@
     </script>
 </body>
 </html>
+
