@@ -227,15 +227,15 @@
                         const tr = document.createElement('tr');
                         let rowHasData = false; // Flag to check if row has data
 
-                  const td = document.createElement('td');                // 建立儲存格 <td>
-                  const cellValue = row[headers[2]];                       // 取 headers 陣列的第三個欄位（索引2）對應資料
-                  if (cellValue) {
+                    const td = document.createElement('td');                // 建立儲存格 <td>
+                    const cellValue = row[headers[0]];                       // 取 headers 陣列的第三個欄位（索引2）對應資料
+                       if (cellValue) {
                        rowHasData = true;                                   // 有資料標記此列有內容
-                       td.textContent = cellValue;                          // 設定儲存格文字
-                  } else {
+                       td.textContent = cellValue; }                         // 設定儲存格文字
+                   else {
                     td.textContent = '';                                 // 無資料則留空
                        }
-                  tr.appendChild(td);                                      // 把此儲存格加到該列
+                   tr.appendChild(td);                                      // 把此儲存格加到該列
                         });
 
                         // Add Quantity input field
