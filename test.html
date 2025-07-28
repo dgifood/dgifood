@@ -215,43 +215,29 @@
                     const headerRow = document.createElement('tr');
 
                     // Create table headers
-function generateTable() {
-    const csvContent = document.getElementById('csvContent');
-    csvContent.innerHTML = '';
+                    const th = document.createElement('th');        // 建立一個 <th> 元素
+                    th.textContent = headers[0];                     // 設定文字為 headers 陣列的第一個元素
+                    headerRow.appendChild(th);                       // 加入到標題列
+                    headerRow.appendChild(document.createElement('th')).textContent = '數量'; // Add Quantity header
+                    thead.appendChild(headerRow);
+                    table.appendChild(thead);
 
-    Object.keys(groupedData).forEach(category => {
-        const div = document.createElement('div');
-        div.classList.add('category');
+                    const tbody = document.createElement('tbody');
+                    groupedData[category][subcategory].forEach((row, rowIndex) => {
+                        const tr = document.createElement('tr');
+                        let rowHasData = false; // Flag to check if row has data
 
-        Object.keys(groupedData[category]).forEach(subcategory => {
-            const subDiv = document.createElement('div');
-            subDiv.classList.add('subcategory');
-
-            const table = document.createElement('table');
-            const thead = document.createElement('thead');
-            const headerRow = document.createElement('tr');
-
-            // 建立「商品名稱」與「數量」欄位
-            const thName = document.createElement('th');
-            thName.textContent = '商品名稱';
-            headerRow.appendChild(thName);
-
-            const thQuantity = document.createElement('th');
-            thQuantity.textContent = '數量';
-            headerRow.appendChild(thQuantity);
-
-            thead.appendChild(headerRow);
-            table.appendChild(thead);
-
-            const tbody = document.createElement('tbody');
-
-            groupedData[category][subcategory].forEach((row, rowIndex) => {
-                const tr = document.createElement('tr');
-
-                // 商品名稱欄（根據你的欄位名稱調整，這裡預設是「品名」）
-                const tdName = document.createElement('td');
-                tdName.textContent = row['品名'] || '';
-                tr.appendChild(tdName);
+                        headers.forEach(header => {
+                            const td = document.createElement('td');
+                            const cellValue = row[header];
+                            if (cellValue) {
+                                rowHasData = true;
+                                td.textContent = cellValue;
+                            } else {
+                                td.textContent = ''; // Ensure empty cells do not show undefined
+                            }
+                            tr.appendChild(td);
+                        });
 
                         // Add Quantity input field
                         const td = document.createElement('td');
