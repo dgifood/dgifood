@@ -210,7 +210,7 @@
 
                     // 取完整欄位名稱陣列
                     const allHeaders = Object.keys(groupedData[category][subcategory][0] || {});
-                    const productNameHeader = allHeaders[2]; // 取第三欄作為商品名稱
+                    const productNameHeader = allHeaders[0]; // 取第三欄作為商品名稱
 
                     const thead = document.createElement('thead');
                     const headerRow = document.createElement('tr');
