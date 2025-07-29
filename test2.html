@@ -8,7 +8,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            text-align: center; /* Center-align all content */
+            text-align: center;
         }
         .container {
             max-width: 800px;
@@ -19,7 +19,7 @@
             border-collapse: collapse;
             margin-bottom: 20px;
             margin-left: auto;
-            margin-right: auto; /* Center-align table */
+            margin-right: auto;
         }
         table, th, td {
             border: 1px solid black;
@@ -40,7 +40,7 @@
         }
         .collapsible.main-category {
             font-weight: bold;
-            color: #6f4f28; /* Coffee color */
+            color: #6f4f28;
         }
         .content {
             display: none;
@@ -53,7 +53,7 @@
         }
         .collapsible.sub-category {
             font-weight: normal;
-            color: #333; /* Default text color */
+            color: #333;
         }
         .result-table {
             width: 100%;
@@ -70,35 +70,39 @@
         }
         .selected-items-title {
             font-weight: bold;
-            color: #6f4f28; /* Coffee color */
+            color: #6f4f28;
             margin-top: 20px;
         }
         button {
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 5px 10px;
+            font-size: 14px;
             border: none;
             border-radius: 5px;
-            background-color: #e0e0e0; /* Light gray background */
-            color: #333; /* Dark text color */
+            background-color: #e0e0e0;
+            color: #333;
             cursor: pointer;
             transition: background-color 0.3s ease, color 0.3s ease;
-            display: inline-block; /* Ensure button does not take full width */
-            margin-top: 10px;
         }
         button:hover {
-            background-color: #b0b0b0; /* Darker gray on hover */
-            color: #000; /* Darker text color on hover */
+            background-color: #b0b0b0;
+            color: #000;
         }
         button:focus {
-            outline: none; /* Remove outline on focus */
+            outline: none;
+        }
+        #searchInput {
+            margin-bottom: 20px;
+            width: 60%;
+            padding: 10px;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>熱量計算表</h1>
+        <input type="text" id="searchInput" placeholder="搜尋商品名稱..." oninput="filterItems()">
 
-        <!-- Calculation and Results Section -->
         <div>
             <button onclick="calculateTotal()">計算總營養成分</button>
             <table class="result-table">
@@ -124,7 +128,6 @@
                 </tbody>
             </table>
 
-            <!-- Selected Items Section -->
             <div class="selected-items-title">所選品項</div>
             <table class="result-table">
                 <thead>
@@ -138,7 +141,6 @@
             </table>
         </div>
 
-        <!-- CSV Content Section -->
         <div id="csvContent"></div>
     </div>
 
@@ -159,28 +161,19 @@
 
         function displayCSVData(data) {
             const csvContent = document.getElementById('csvContent');
-
-            // Clear existing content
             csvContent.innerHTML = '';
 
-            // Group data by the first and second columns
             const groupedData = data.reduce((acc, row) => {
                 const category = row[Object.keys(row)[0]];
                 const subcategory = row[Object.keys(row)[1]];
 
-                if (!category || !subcategory) return acc; // Skip if category or subcategory is undefined
-
-                if (!acc[category]) {
-                    acc[category] = {};
-                }
-                if (!acc[category][subcategory]) {
-                    acc[category][subcategory] = [];
-                }
+                if (!category || !subcategory) return acc;
+                if (!acc[category]) acc[category] = {};
+                if (!acc[category][subcategory]) acc[category][subcategory] = [];
                 acc[category][subcategory].push(row);
                 return acc;
             }, {});
 
-            // Create collapsible sections for each main category
             Object.keys(groupedData).forEach(category => {
                 const button = document.createElement('button');
                 button.className = 'collapsible main-category';
@@ -194,8 +187,7 @@
 
                 const div = document.createElement('div');
                 div.className = 'content';
-                
-                // Create nested collapsible sections for each subcategory
+
                 Object.keys(groupedData[category]).forEach(subcategory => {
                     const subButton = document.createElement('button');
                     subButton.className = 'collapsible nested-content sub-category';
@@ -214,54 +206,54 @@
                     const thead = document.createElement('thead');
                     const headerRow = document.createElement('tr');
 
-                    // Create table headers
                     headers.forEach(header => {
                         const th = document.createElement('th');
                         th.textContent = header;
                         headerRow.appendChild(th);
                     });
-                    headerRow.appendChild(document.createElement('th')).textContent = '數量'; // Add Quantity header
+                    headerRow.appendChild(document.createElement('th')).textContent = '數量';
                     thead.appendChild(headerRow);
                     table.appendChild(thead);
 
                     const tbody = document.createElement('tbody');
                     groupedData[category][subcategory].forEach((row, rowIndex) => {
                         const tr = document.createElement('tr');
-                        let rowHasData = false; // Flag to check if row has data
+                        let rowHasData = false;
 
                         headers.forEach(header => {
                             const td = document.createElement('td');
                             const cellValue = row[header];
-                            if (cellValue) {
-                                rowHasData = true;
-                                td.textContent = cellValue;
-                            } else {
-                                td.textContent = ''; // Ensure empty cells do not show undefined
-                            }
+                            td.textContent = cellValue || '';
+                            if (cellValue) rowHasData = true;
                             tr.appendChild(td);
                         });
 
-                        // Add Quantity input field
                         const td = document.createElement('td');
                         const input = document.createElement('input');
                         input.type = 'number';
                         input.className = 'quantity-input';
-                        input.id = `quantity-${rowIndex}`;
                         input.value = 0;
                         input.min = 0;
-                        input.dataset.calories = row['熱量'] || 0; // Ensure header matches CSV file
-                        input.dataset.protein = row['蛋白質'] || 0;   // Ensure header matches CSV file
-                        input.dataset.fat = row['脂肪'] || 0;           // Ensure header matches CSV file
-                        input.dataset.carbs = row['碳水化合物'] || 0;       // Ensure header matches CSV file
-                        input.dataset.fiber = row['膳食纖維'] || 0;       // Ensure header matches CSV file
-                        input.dataset.netcarb = row['淨碳'] || 0;          // Ensure header matches CSV file
-                        input.dataset.weight = row['重量'] || 0;    // Add weight attribute if matches CSV file
+                        input.dataset.calories = row['熱量'] || 0;
+                        input.dataset.protein = row['蛋白質'] || 0;
+                        input.dataset.fat = row['脂肪'] || 0;
+                        input.dataset.carbs = row['碳水化合物'] || 0;
+                        input.dataset.fiber = row['膳食纖維'] || 0;
+                        input.dataset.netcarb = row['淨碳'] || 0;
+                        input.dataset.weight = row['重量'] || 0;
+
+                        const plusBtn = document.createElement('button');
+                        plusBtn.textContent = '+';
+                        plusBtn.style.marginLeft = '10px';
+                        plusBtn.onclick = () => {
+                            input.value = parseInt(input.value) + 1;
+                        };
+
                         td.appendChild(input);
+                        td.appendChild(plusBtn);
                         tr.appendChild(td);
 
-                        tbody.appendChild(tr);
-
-                        if (rowHasData) { // Only append the row if it has data
+                        if (rowHasData) {
                             tbody.appendChild(tr);
                         }
                     });
@@ -277,17 +269,15 @@
 
         function calculateTotal() {
             const quantities = document.querySelectorAll('.quantity-input');
-            let totalCalories = 0;
-            let totalProtein = 0;
-            let totalFat = 0;
-            let totalCarbs = 0;
-            let totalfiber = 0;
-            let totalnetcarb = 0;
+            let totalCalories = 0, totalProtein = 0, totalFat = 0;
+            let totalCarbs = 0, totalfiber = 0, totalnetcarb = 0;
             const selectedItems = [];
 
             quantities.forEach(input => {
                 const quantity = parseFloat(input.value);
                 if (quantity > 0) {
+                    const row = input.closest('tr');
+                    const itemName = row.cells[0]?.textContent || '';
                     const calories = parseFloat(input.dataset.calories) || 0;
                     const protein = parseFloat(input.dataset.protein) || 0;
                     const fat = parseFloat(input.dataset.fat) || 0;
@@ -302,9 +292,6 @@
                     totalCarbs += carbs * quantity;
                     totalfiber += fiber * quantity;
                     totalnetcarb += netcarb * quantity;
-
-                    const row = input.closest('tr');
-                    const itemName = row.cells[0].textContent;
 
                     selectedItems.push({ name: itemName, quantity, weight: weight * quantity });
                 }
@@ -321,17 +308,17 @@
             selectedItemsTable.innerHTML = '';
             selectedItems.forEach(item => {
                 const row = document.createElement('tr');
-                const itemNameCell = document.createElement('td');
-                itemNameCell.textContent = item.name;
-                const quantityCell = document.createElement('td');
-                quantityCell.textContent = item.quantity;
-                const weightCell = document.createElement('td');
-                weightCell.textContent = item.weight.toFixed(2); // Display weight rounded to 2 decimals
-
-                row.appendChild(itemNameCell);
-                row.appendChild(quantityCell);
-                row.appendChild(weightCell);
+                row.innerHTML = `<td>${item.name}</td><td>${item.quantity}</td><td>${item.weight.toFixed(2)}</td>`;
                 selectedItemsTable.appendChild(row);
+            });
+        }
+
+        function filterItems() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            const allRows = document.querySelectorAll('#csvContent table tbody tr');
+            allRows.forEach(row => {
+                const itemName = row.cells[0]?.textContent?.toLowerCase() || '';
+                row.style.display = itemName.includes(keyword) ? '' : 'none';
             });
         }
     </script>
